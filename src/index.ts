@@ -17,6 +17,20 @@ export class ClientWsService {
       console.log(msg.data);
     };
 
-    wsClient.on("open", () => setInterval(() => wsClient.send("hello"), 3000));
+    wsClient.on("open", () =>
+    // TODO read directory with torrent files and send their to service
+      setInterval(
+        () =>
+          wsClient.send(
+            JSON.stringify({
+              name: "hello",
+              bitrate: 123,
+              extName: ".mp4",
+              size: 1234,
+            })
+          ),
+        3000
+      )
+    );
   }
 }
