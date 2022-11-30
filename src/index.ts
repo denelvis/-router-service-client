@@ -1,36 +1,31 @@
 import { WebSocket } from "ws";
 
-export class ClientWsService {
-  declare readonly url: string;
+import { IVideoFile } from "./interfaces";
+import { routerClientId } from "./locals/index";
 
-  declare wss: WebSocket;
+export class RouterClientService {
+  private declare readonly url: string;
+
+  private declare wss: WebSocket;
 
   constructor(url: string) {
     this.url = url;
     this.wss = new WebSocket(url);
   }
 
-  public async run() {
+  public async registerVideos(videos: IVideoFile[]) {
     const wsClient = this.wss;
+    const routes: string[] = [];
 
-    wsClient.onmessage = (msg) => {
-      console.log(msg.data);
-    };
+    wsClient.on("open", () => {
+      wsClient.send(JSON.stringify({ id: routerClientId, files: videos }));
 
-    wsClient.on("open", () =>
-    // TODO read directory with torrent files and send their to service
-      setInterval(
-        () =>
-          wsClient.send(
-            JSON.stringify({
-              name: "hello",
-              bitrate: 123,
-              extName: ".mp4",
-              size: 1234,
-            })
-          ),
-        3000
-      )
-    );
+      wsClient.onmessage = (msg) => {
+        const routeStrings: string[] = JSON.parse(msg.data.toString());
+        if (Object.keys(routeStrings).includes("routerServersUrls")) {
+          routes.push(...routeStrings);
+        }
+      };
+    });
   }
 }
