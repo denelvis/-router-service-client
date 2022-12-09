@@ -4,11 +4,11 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 module.exports = {
   mode: "production",
   entry: {
-    routerClientService: path.resolve(__dirname, "./src/index.ts"),
+    "router-client-service": path.resolve(__dirname, "./src/index.ts"),
   },
   output: {
     path: path.resolve(__dirname, "./dist"),
-    filename: "[name].min.js",
+    filename: "[name].js",
     library: "libraryStarter",
     libraryTarget: "umd",
     globalObject: "this",
